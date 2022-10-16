@@ -4,7 +4,8 @@ import cv2 #pip install opencv-python - si es necesario cambiar el interprete (c
 import matplotlib.pyplot as plt
 import numpy as np
 #from tensorflow.keras.callbacks import TensorBoard
-#from tensorflow.keras.preprocessing.image import ImageDataGenerator
+#La libreria ImageDataGenerator se instala de aqui https://vijayabhaskar96.medium.com/tutorial-on-keras-imagedatagenerator-with-flow-from-dataframe-8bd5776e45c1
+from keras_preprocessing.image import ImageDataGenerator
 
 #Para los dataset consultar en Tensorflow datasets (https://www.tensorflow.org/datasets/catalog/overview)
 #El data set de humans or horses se encuentra aqui https://laurencemoroney.com/datasets.html
@@ -68,3 +69,13 @@ print (fotos2.shape)
 #Se convierten las etiquetas en un array
 etiquetas = np.array(etiquetas)
 etiquetas2 = np.array(etiquetas2)
+
+mgTrainGen = ImageDataGenerator(
+    rotation_range = 50,             #Rotación aleatoria de las imagenes
+    width_shift_range = 0.3,        #Desplazamiento aleatorio de las imagenes
+    height_shift_range = 0.3,     
+    shear_range = 15,              #Corte aleatorio de las imagenes
+    zoom_range = [0.5, 1.5],      #Zoom aleatorio de las imagenes
+    horizontal_flip = True,
+    vertical_flip = True,
+)
