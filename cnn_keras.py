@@ -63,6 +63,7 @@ for nameDir2 in ListaTest:
     con2 += 1
          
 #Normalizacion de imagenes
+#convertimos las imagenes en escala de grises
 fotos = np.array(fotos).astype(float)/255
 print (fotos.shape)
 fotos2 = np.array(fotos2).astype(float)/255
@@ -101,4 +102,20 @@ ModeloDenso = tf.keras.models.Sequential([
     tf.keras.layers.Dense(150, activation='relu'),    #capa oculta con 150 neuronas
     tf.keras.layers.Dense(150, activation='relu'),     #capa oculta con 150 neuronas
     tf.keras.layers.Dense(1, activation='sigmoid')    #capa de salida con 2 neuronas
+])
+
+#Red neuronal convolucional
+#Esta red neuronal tiene capas convolucionales, por ende trabaja mejor con imagenes
+ModeloConvolucional = tf.keras.models.Sequential([
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(200, 200, 1)), #capa de entrada con 32 kernels de 3x3
+    tf.keras.layers.MaxPooling2D(2, 2), #capa de max pooling
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'), #capa oculta con 64 kernels de 3x3
+    tf.keras.layers.MaxPooling2D(2,2), #capa de max pooling
+    tf.keras.layers.Conv2D(128, (3,3), activation='relu'), #capa oculta con 128 kernels de 3x3
+    tf.keras.layers.MaxPooling2D(2,2), #capa de max pooling
+
+    #capas densas de clasificación
+    tf.keras.layers.Flatten(), #capa de entrada con 20000 neuronas
+    tf.keras.layers.Dense(256, activation='relu'), #capa oculta con 256 neuronas
+    tf.keras.layers.Dense(1, activation='sigmoid') #capa de salida con 2 neuronas
 ])
