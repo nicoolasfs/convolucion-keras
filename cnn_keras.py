@@ -3,7 +3,7 @@ import tensorflow as tf
 import cv2 #pip install opencv-python - si es necesario cambiar el interprete (ctrl + shift + p))      
 import matplotlib.pyplot as plt
 import numpy as np
-#from tensorflow.keras.callbacks import TensorBoard
+from keras.callbacks import TensorBoard
 #La libreria ImageDataGenerator se instala de aqui https://vijayabhaskar96.medium.com/tutorial-on-keras-imagedatagenerator-with-flow-from-dataframe-8bd5776e45c1
 from keras_preprocessing.image import ImageDataGenerator
 
@@ -119,3 +119,58 @@ ModeloConvolucional = tf.keras.models.Sequential([
     tf.keras.layers.Dense(256, activation='relu'), #capa oculta con 256 neuronas
     tf.keras.layers.Dense(1, activation='sigmoid') #capa de salida con 2 neuronas
 ])
+
+#Red neuronal convolucional con dropout
+#Esta red encuentra caminos distintos con cada entrenamiento, por ende es más robusta
+ModeloCNN2 = tf.keras.models.Sequential([
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(200, 200, 1)), #capa de entrada con 32 kernels de 3x3
+    tf.keras.layers.MaxPooling2D(2, 2), #capa de max pooling
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'), #capa oculta con 64 kernels de 3x3
+    tf.keras.layers.MaxPooling2D(2,2), #capa de max pooling
+    tf.keras.layers.Conv2D(128, (3,3), activation='relu'), #capa oculta con 128 kernels de 3x3
+    tf.keras.layers.MaxPooling2D(2,2), #capa de max pooling
+
+    #capas densas de clasificación
+    tf.keras.layers.dropout(0.5), #capa de dropout
+    tf.keras.layers.Flatten(), #capa de entrada con 20000 neuronas
+    tf.keras.layers.Dense(256, activation='relu'), #capa oculta con 256 neuronas
+    tf.keras.layers.Dense(1, activation='sigmoid') #capa de salida con 2 neuronas
+])
+
+#Se compilan los modelos
+ModeloDenso.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+ModeloConvolucional.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+ModeloCNN2.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+#Observacion y entrenamiento de las redes
+#Entrenamiento de modelo denso
+BoardDenso = TensorBoard(log_dir='C:/Users/nfons/Documents/Universidad/Proyecto de grado/Redes/Dataset/Board/Denso')
+ModeloDenso.fit(imgTrain, batch_size=32, epochs=100, validation_data=(fotos2, etiquetas2), callbacks=[BoardDenso], steps_per_epoch=int(np.ceil(len(fotos)/32)), 
+            validation_steps=int(np.ceil(len(fotos2)/32)))
+
+#Guardado del modelo denso
+ModeloDenso.save('ClasificadorDenso.h5')
+ModeloDenso.save_weights('PesosDenso.h5')
+print ("Modelo denso guardado")
+
+#Entrenamiento de modelo convolucional
+BoardCNN = TensorBoard(log_dir='C:/Users/nfons/Documents/Universidad/Proyecto de grado/Redes/Dataset/Board/CNN')
+ModeloConvolucional.fit(imgTrain, batch_size=32, epochs=100, validation_data=(fotos2, etiquetas2), callbacks=[BoardCNN], steps_per_epoch=int(np.ceil(len(fotos)/32)), 
+            validation_steps=int(np.ceil(len(fotos2)/32)))
+
+#Guardado del modelo convolucional
+ModeloConvolucional.save('ClasificadorCNN.h5')
+ModeloConvolucional.save_weights('PesosCNN.h5')
+print ("Modelo convolucional guardado")
+
+#Entrenamiento de modelo convolucional con dropout
+BoardCNN2 = TensorBoard(log_dir='C:/Users/nfons/Documents/Universidad/Proyecto de grado/Redes/Dataset/Board/CNN2')
+ModeloCNN2.fit(imgTrain, batch_size=32, epochs=100, validation_data=(fotos2, etiquetas2), callbacks=[BoardCNN2], steps_per_epoch=int(np.ceil(len(fotos)/32)), 
+            validation_steps=int(np.ceil(len(fotos2)/32)))
+
+#Guardado del modelo convolucional con dropout
+ModeloCNN2.save('ClasificadorCNN2.h5')
+ModeloCNN2.save_weights('PesosCNN2.h5')
+print ("Modelo convolucional con dropout guardado")
