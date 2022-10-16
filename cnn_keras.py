@@ -9,6 +9,7 @@ from keras_preprocessing.image import ImageDataGenerator
 
 #Para los dataset consultar en Tensorflow datasets (https://www.tensorflow.org/datasets/catalog/overview)
 #El data set de humans or horses se encuentra aqui https://laurencemoroney.com/datasets.html
+#pip install SciPy 
 
 #Dirección de imagenes para entrenamiento y validación
 entrenamiento = 'C:/Users/nfons/Documents/Universidad/Proyecto de grado/Redes/Dataset/Entrenamiento'
@@ -70,7 +71,7 @@ print (fotos2.shape)
 etiquetas = np.array(etiquetas)
 etiquetas2 = np.array(etiquetas2)
 
-mgTrainGen = ImageDataGenerator(
+imgTrainGen = ImageDataGenerator(
     rotation_range = 50,             #Rotación aleatoria de las imagenes
     width_shift_range = 0.3,        #Desplazamiento aleatorio de las imagenes
     height_shift_range = 0.3,     
@@ -79,3 +80,16 @@ mgTrainGen = ImageDataGenerator(
     horizontal_flip = True,
     vertical_flip = True,
 )
+
+imgTrainGen.fit(fotos)
+plt.figure(figsize=(20,8))
+for imagen, etiqueta in imgTrainGen.flow(fotos, etiquetas, batch_size=10, shuffle=False):
+    for i in range(10):
+        plt.subplot(2, 5, i+1)
+        plt.xticks([])
+        plt.yticks([])
+        plt.imshow(imagen[i], cmap='gray')
+    plt.show()
+    break
+
+imgTrain = imgTrainGen.flow(fotos, etiquetas, batch_size=32)
