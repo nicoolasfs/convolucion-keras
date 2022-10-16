@@ -93,3 +93,12 @@ for imagen, etiqueta in imgTrainGen.flow(fotos, etiquetas, batch_size=10, shuffl
     break
 
 imgTrain = imgTrainGen.flow(fotos, etiquetas, batch_size=32)
+
+#Red neuronal densa
+#Esta red neuronal no tiene capas convolucionales, por ende trabaja mejor con problemas numericos más no con imagenes
+ModeloDenso = tf.keras.models.Sequential([
+    tf.keras.layers.Flatten(input_shape=(200, 200, 1)), #capa de entrada con 40000 neuronas
+    tf.keras.layers.Dense(150, activation='relu'),    #capa oculta con 150 neuronas
+    tf.keras.layers.Dense(150, activation='relu'),     #capa oculta con 150 neuronas
+    tf.keras.layers.Dense(1, activation='sigmoid')    #capa de salida con 2 neuronas
+])
